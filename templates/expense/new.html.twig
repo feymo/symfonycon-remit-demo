@@ -1,0 +1,15 @@
+{% extends 'base.html.twig' %}
+{% import '_partials/_ui.html.twig' as ui %}
+
+{# Variables: form #}
+
+{% block title %}New expense{% endblock %}
+
+{% block breadcrumb %}
+    {{ ui.breadcrumb([{label: 'Expenses', url: path('app_expense_index')}, {label: 'New expense'}]) }}
+{% endblock %}
+
+{% block body %}
+    <h1 class="page-title">New expense</h1>
+    {{ include('expense/_form.html.twig', {button_label: 'Save expense'}) }}
+{% endblock %}

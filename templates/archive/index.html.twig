@@ -1,0 +1,46 @@
+{% extends 'base.html.twig' %}
+{% import '_partials/_ui.html.twig' as ui %}
+{% import '_partials/_icons.html.twig' as icons %}
+
+{#
+    Past months. In the app this page opens as a modal sheet:
+    no template change, only the path configuration rule in App\Native\AppNativeConfiguration.
+    Variables: total (string), expense_count (int),
+               months ({month: \DateTimeImmutable, total, count, pending}[])
+#}
+
+{% block title %}Archives{% endblock %}
+
+{% block breadcrumb %}
+    {{ ui.breadcrumb([{label: 'Expenses', url: path('app_expense_index')}, {label: 'Archives'}]) }}
+{% endblock %}
+
+{% block body %}
+<div class="layout">
+    <aside class="layout__side">
+        <section class="card total-card" aria-label="Last {{ months|length }} months">
+            <p class="total-card__label">Last {{ months|length }} months</p>
+            {% set total_label = ui.money(total) %}
+            <p class="total-card__amount amount{{ total_label|length > 8 ? ' total-card__amount--long' }}">{{ total_label }}</p>
+            <p class="total-card__sub">{{ expense_count }} expenses</p>
+            <a class="button button--secondary button--block" href="{{ path('app_expense_index') }}">Back to this month</a>
+        </section>
+    </aside>
+
+    <section class="layout__main" aria-label="Past months">
+        <div class="section-head"><h1>Archives</h1></div>
+
+        <div class="card list">
+            {% for row in months %}
+                <a class="month-row" href="{{ path('app_expense_index', {month: row.month|date('Y-m')}) }}">
+                    <span class="month-row__name">{{ row.month|date('F Y') }}</span>
+                    <span class="month-row__meta">{{ row.count }} expense{{ row.count > 1 ? 's' }}{% if row.pending > 0 %} · {{ row.pending }} pending{% endif %}</span>
+                    <span class="month-row__status">{{ ui.status_badge(row.pending > 0 ? 'submitted' : 'reimbursed') }}</span>
+                    <span class="month-row__amount amount">{{ ui.money(row.total) }}</span>
+                    <span class="month-row__chevron">{{ icons.icon('right', 26, 2.5) }}</span>
+                </a>
+            {% endfor %}
+        </div>
+    </section>
+</div>
+{% endblock %}

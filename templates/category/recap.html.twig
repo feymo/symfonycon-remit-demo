@@ -1,0 +1,47 @@
+{% extends 'base.html.twig' %}
+{% import '_partials/_ui.html.twig' as ui %}
+
+{#
+    Totals by category. Plain bars, no chart library.
+    Variables: month (\DateTimeImmutable), total (string), expense_count (int),
+               rows ({category, total, count, share}[] sorted by total, share in 0–100)
+#}
+
+{% block title %}By category{% endblock %}
+
+{% block breadcrumb %}
+    {{ ui.breadcrumb([{label: 'Expenses', url: path('app_expense_index')}, {label: 'By category'}]) }}
+{% endblock %}
+
+{% block body %}
+<div class="layout">
+    <aside class="layout__side">
+        <section class="card total-card" aria-label="Monthly total">
+            <p class="total-card__label">Total this month</p>
+            {% set total_label = ui.money(total) %}
+            <p class="total-card__amount amount{{ total_label|length > 8 ? ' total-card__amount--long' }}">{{ total_label }}</p>
+            <p class="total-card__sub">
+                {{ expense_count }} expenses in {{ rows|length }} categories
+            </p>
+            <a class="button button--secondary button--block" href="{{ path('app_expense_index', {month: month|date('Y-m')}) }}">See all expenses</a>
+        </section>
+    </aside>
+
+    <section class="layout__main" aria-label="Categories">
+        <div class="section-head"><h1>{{ month|date('F Y') }}, by category</h1></div>
+
+        <div class="card list">
+            {% for row in rows %}
+                <div class="recap-row">
+                    <span class="recap-row__tile">{{ ui.category_tile(row.category) }}</span>
+                    <span class="recap-row__label">{{ row.category.label }}</span>
+                    <span class="recap-row__count">{{ row.count }} expense{{ row.count > 1 ? 's' }}</span>
+                    <span class="bar" aria-hidden="true"><span style="width: {{ max(row.share, 1.2) }}%"></span></span>
+                    <span class="recap-row__share amount">{{ row.share|round }}%</span>
+                    <span class="recap-row__amount amount">{{ ui.money(row.total) }}</span>
+                </div>
+            {% endfor %}
+        </div>
+    </section>
+</div>
+{% endblock %}

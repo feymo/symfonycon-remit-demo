@@ -1,0 +1,36 @@
+# Remit — FrankenPHP / Caddy configuration.
+#
+# SERVER_NAME (set by compose.yaml) is "remit.test, http://":
+#   - https://remit.test  → the browser on the Mac and the iOS Simulator (local CA, see `make trust`);
+#   - http://<anything>   → plain HTTP for a real iPhone and the Android emulator, which reach
+#                           the Mac by IP or by its .local name and don't know the local CA.
+
+{
+	skip_install_trust
+
+	{$CADDY_GLOBAL_OPTIONS}
+
+	frankenphp {
+		{$FRANKENPHP_CONFIG}
+	}
+}
+
+{$CADDY_EXTRA_CONFIG}
+
+{$SERVER_NAME:localhost} {
+	log {
+		{$CADDY_SERVER_LOG_OPTIONS}
+	}
+
+	root /app/public
+	encode zstd br gzip
+
+	# Receipt photos straight from an iPhone (PHP accepts 16 MB, see conf.d/10-app.ini)
+	request_body {
+		max_size 20MB
+	}
+
+	{$CADDY_SERVER_EXTRA_DIRECTIVES}
+
+	php_server
+}

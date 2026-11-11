@@ -1,0 +1,43 @@
+# Remit — local stack: a single FrankenPHP container (Caddy + PHP 8.5), SQLite in var/.
+#
+#   make build   # build the image (once, or after editing the Dockerfile)
+#   make up      # start
+#   make help    # everything else
+
+name: remit
+
+services:
+  php:
+    build:
+      context: .
+      target: frankenphp_dev
+    image: remit-php:dev
+    restart: unless-stopped
+    environment:
+      # HTTPS on the local domain + plain HTTP for any other host (iPhone, Android emulator).
+      SERVER_NAME: ${SERVER_NAME:-remit.test}, http://
+      # Certificates for remit.test come from Caddy's local CA (`make trust` adds it to macOS).
+      CADDY_GLOBAL_OPTIONS: local_certs
+      XDEBUG_MODE: ${XDEBUG_MODE:-off}
+    volumes:
+      - ./:/app
+      - caddy_data:/data      # local CA + certificates: keep them, or you trust a new CA every time
+      - caddy_config:/config
+    ports:
+      # 80 and 443 are required for the local domain (Docker Desktop binds them without sudo).
+      - target: 80
+        published: ${HTTP_PORT:-80}
+        protocol: tcp
+      - target: 443
+        published: ${HTTPS_PORT:-443}
+        protocol: tcp
+      - target: 443
+        published: ${HTTPS_PORT:-443}
+        protocol: udp     # HTTP/3
+    extra_hosts:
+      - host.docker.internal:host-gateway   # Xdebug
+    tty: true             # human-readable logs
+
+volumes:
+  caddy_data:
+  caddy_config:

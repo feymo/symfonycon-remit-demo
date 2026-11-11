@@ -1,0 +1,78 @@
+{% extends 'base.html.twig' %}
+{% import '_partials/_ui.html.twig' as ui %}
+{% import '_partials/_icons.html.twig' as icons %}
+
+{#
+    Month list (root screen of the app).
+    Variables: month (\DateTimeImmutable), expenses (Expense[]), total (string),
+               counts ({draft, submitted, reimbursed}), previous_month, next_month (\DateTimeImmutable|null)
+#}
+
+{% block title %}{{ month|date('F Y') }}{% endblock %}
+
+{% block breadcrumb %}
+    {{ ui.breadcrumb([{label: 'Expenses', url: path('app_expense_index')}, {label: month|date('F Y')}]) }}
+{% endblock %}
+
+{% block body %}
+<div class="layout">
+    <aside class="layout__side">
+        <section class="card total-card" aria-label="Monthly total">
+            <p class="total-card__label">Total this month</p>
+            {% set total_label = ui.money(total) %}
+            <p class="total-card__amount amount{{ total_label|length > 8 ? ' total-card__amount--long' }}">{{ total_label }}</p>
+            <p class="total-card__sub">
+                {%- if expenses is empty -%}
+                    No expenses yet
+                {%- else -%}
+                    {{ expenses|length }} expense{{ expenses|length > 1 ? 's' }}
+                {%- endif -%}
+            </p>
+
+            {% if expenses is not empty %}
+                <ul class="total-card__breakdown">
+                    {% for status in ['draft', 'submitted', 'reimbursed'] %}
+                        <li>{{ ui.status_badge(status) }}<span class="amount">{{ counts[status] }}</span></li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+
+            <a class="button button--primary button--block"
+               href="{{ path('app_expense_new') }}">
+                {{ icons.icon('plus', 26, 2.5) }}<span>New expense</span>
+            </a>
+        </section>
+    </aside>
+
+    <section class="layout__main" aria-label="Expenses">
+        <div class="section-head">
+            <h1>{{ month|date('F Y') }}</h1>
+
+            <nav class="stepper" aria-label="Month">
+                {% if previous_month %}
+                    <a class="stepper__button" href="{{ path('app_expense_index', {month: previous_month|date('Y-m')}) }}"
+                       aria-label="Previous month">{{ icons.icon('left', 26, 2.5) }}</a>
+                {% endif %}
+                {% if next_month %}
+                    <a class="stepper__button" href="{{ path('app_expense_index', {month: next_month|date('Y-m')}) }}"
+                       aria-label="Next month">{{ icons.icon('right', 26, 2.5) }}</a>
+                {% endif %}
+            </nav>
+        </div>
+
+        {% if expenses is empty %}
+            <div class="card empty">
+                <span class="empty__icon">{{ icons.icon('receipt', 54) }}</span>
+                <h2>No expenses in {{ month|date('F') }}</h2>
+                <p>Snap a receipt to add your first one.</p>
+            </div>
+        {% else %}
+            <div class="card list">
+                {% for expense in expenses %}
+                    {{ include('expense/_row.html.twig') }}
+                {% endfor %}
+            </div>
+        {% endif %}
+    </section>
+</div>
+{% endblock %}

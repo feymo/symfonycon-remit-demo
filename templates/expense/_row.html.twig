@@ -1,0 +1,9 @@
+{% import '_partials/_ui.html.twig' as ui %}
+{# One row, two layouts: 4 columns on the web, 2 lines at phone width (see .expense-row in app.css). #}
+<a class="expense-row" href="{{ path('app_expense_show', {id: expense.id}) }}">
+    <span class="expense-row__tile">{{ ui.category_tile(expense.category) }}</span>
+    <span class="expense-row__merchant">{{ expense.merchant }}</span>
+    <span class="expense-row__meta">{{ expense.spentAt|date('M j') }} · {{ expense.category.label }}</span>
+    <span class="expense-row__status">{{ ui.status_badge(expense.status) }}</span>
+    <span class="expense-row__amount amount">{{ ui.money(expense.amount) }}</span>
+</a>

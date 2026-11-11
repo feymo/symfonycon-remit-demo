@@ -1,0 +1,49 @@
+{#
+    Small UI macros shared by every page, web and native alike.
+        {% import '_partials/_ui.html.twig' as ui %}
+#}
+
+{# €1,086.20 — one formatting rule for the whole app (needs twig/intl-extra). #}
+{% macro money(amount) -%}
+    {{ amount|format_currency('EUR', locale='en') }}
+{%- endmacro %}
+
+{# Status is never colour alone: outline / tint / solid + icon + label. #}
+{% macro status_badge(status, size = 'default') -%}
+    {% import '_partials/_icons.html.twig' as icons %}
+    {%- set key = status.value ?? status -%}
+    {%- set labels = {draft: 'Draft', submitted: 'Submitted', reimbursed: 'Reimbursed'} -%}
+    {%- set glyphs = {draft: 'pencil', submitted: 'clock', reimbursed: 'check'} -%}
+    <span class="status status--{{ key }}{{ size == 'small' ? ' status--small' }}">
+        {{- icons.icon(glyphs[key], size == 'small' ? 14 : 18, 2.5) -}}
+        <span>{{ labels[key] }}</span>
+    </span>
+{%- endmacro %}
+
+{# Neutral tile, icon only — the label always sits next to it. #}
+{% macro category_tile(category, size = 'default') -%}
+    {% import '_partials/_icons.html.twig' as icons %}
+    <span class="tile{{ size == 'small' ? ' tile--small' }}">{{ icons.icon(category.icon, size == 'small' ? 22 : 26) }}</span>
+{%- endmacro %}
+
+{# Web only: base.html.twig renders the breadcrumb block outside the app. #}
+{% macro breadcrumb(items) -%}
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+        {%- for item in items -%}
+            {% if not loop.first %}<span aria-hidden="true">/</span>{% endif %}
+            {%- if item.url is defined and not loop.last -%}
+                <a href="{{ item.url }}">{{ item.label }}</a>
+            {%- else -%}
+                <span aria-current="page">{{ item.label }}</span>
+            {%- endif -%}
+        {%- endfor -%}
+    </nav>
+{%- endmacro %}
+
+{# Validation messages under a field, readable from the back of the room. #}
+{% macro field_errors(field) -%}
+    {% import '_partials/_icons.html.twig' as icons %}
+    {%- for error in field.vars.errors -%}
+        <p class="field__error" id="{{ field.vars.id }}_error">{{ icons.icon('alert', 22, 2.5) }}<span>{{ error.message }}</span></p>
+    {%- endfor -%}
+{%- endmacro %}

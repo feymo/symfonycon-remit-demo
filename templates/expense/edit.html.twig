@@ -1,0 +1,19 @@
+{% extends 'base.html.twig' %}
+{% import '_partials/_ui.html.twig' as ui %}
+
+{# Same form as new, pre-filled. Variables: form, expense #}
+
+{% block title %}Edit expense{% endblock %}
+
+{% block breadcrumb %}
+    {{ ui.breadcrumb([
+        {label: 'Expenses', url: path('app_expense_index')},
+        {label: expense.merchant, url: path('app_expense_show', {id: expense.id})},
+        {label: 'Edit'},
+    ]) }}
+{% endblock %}
+
+{% block body %}
+    <h1 class="page-title">Edit expense</h1>
+    {{ include('expense/_form.html.twig', {button_label: 'Save changes'}) }}
+{% endblock %}

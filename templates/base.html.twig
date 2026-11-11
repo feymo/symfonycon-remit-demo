@@ -1,0 +1,31 @@
+{#
+    One layout for every page.
+#}
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+        <title>{% block title %}Expenses{% endblock %} · Remit</title>
+        {% block stylesheets %}{% endblock %}
+        {% block javascripts %}
+            {% block importmap %}{{ importmap('app') }}{% endblock %}
+        {% endblock %}
+    </head>
+    <body>
+        {{ include('_partials/_navbar.html.twig') }}
+
+        <main class="page">
+            {% block breadcrumb %}{% endblock %}
+
+            {% for message in app.flashes('success') %}
+                <p class="flash" role="status">{{ message }}</p>
+            {% endfor %}
+
+            {% block body %}{% endblock %}
+        </main>
+
+        {{ include('_partials/_footer.html.twig') }}
+    </body>
+</html>

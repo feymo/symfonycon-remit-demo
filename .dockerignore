@@ -1,0 +1,12 @@
+**/*.log
+**/*.md
+**/.DS_Store
+.git/
+.idea/
+.vscode/
+var/
+vendor/
+public/uploads/
+assets/vendor/
+compose*.yaml
+Makefile

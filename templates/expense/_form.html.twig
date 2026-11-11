@@ -1,0 +1,93 @@
+{% import '_partials/_ui.html.twig' as ui %}
+{% import '_partials/_icons.html.twig' as icons %}
+
+{#
+    The expense form, shared by new and edit. Built for App\Form\ExpenseType.
+    The receipt photo is the main action: a big <label> around <input type="file" accept="image/*" capture>.
+    Variables: form, button_label
+#}
+
+{% set invalid_fields = form.children|filter(child => not child.vars.valid)|length %}
+
+{{ form_start(form, {attr: {class: 'expense-form', novalidate: 'novalidate'}}) }}
+
+    {% if form.vars.submitted and invalid_fields > 0 %}
+        <div class="alert" role="alert">
+            {{ icons.icon('alert', 34, 2.5) }}
+            <div>
+                <strong>{{ invalid_fields }} {{ invalid_fields > 1 ? 'fields need' : 'field needs' }} your attention</strong>
+                <span>Fix {{ invalid_fields > 1 ? 'them' : 'it' }} below, then save again.</span>
+            </div>
+        </div>
+    {% endif %}
+
+    <div class="expense-form__grid">
+        <div class="field field--photo{{ form.receipt.vars.valid ? '' : ' is-invalid' }}" data-controller="receipt-preview">
+            <label class="photo-drop" for="{{ form.receipt.vars.id }}">
+                <img class="photo-drop__preview" alt="" hidden data-receipt-preview-target="image">
+                <span class="photo-drop__icon">{{ icons.icon('camera', 52) }}</span>
+                <span class="photo-drop__title">Take a photo of the receipt</span>
+                <span class="photo-drop__hint">Opens the camera — or pick a file</span>
+                {{ form_widget(form.receipt, {attr: {
+                    class: 'visually-hidden',
+                    accept: 'image/*',
+                    capture: 'environment',
+                    'data-action': 'receipt-preview#show',
+                    'aria-invalid': form.receipt.vars.valid ? 'false' : 'true',
+                }}) }}
+            </label>
+            {{ ui.field_errors(form.receipt) }}
+        </div>
+
+        <div class="expense-form__fields">
+            <div class="field{{ form.amount.vars.valid ? '' : ' is-invalid' }}">
+                {{ form_label(form.amount, 'Amount', {label_attr: {class: 'field__label'}}) }}
+                <div class="input input--money">
+                    <span aria-hidden="true">€</span>
+                    {{ form_widget(form.amount, {attr: {placeholder: '0.00', inputmode: 'decimal', autocomplete: 'off', 'aria-invalid': form.amount.vars.valid ? 'false' : 'true'}}) }}
+                </div>
+                {{ ui.field_errors(form.amount) }}
+            </div>
+
+            <div class="field-row">
+                <div class="field{{ form.spentAt.vars.valid ? '' : ' is-invalid' }}">
+                    {{ form_label(form.spentAt, 'Date', {label_attr: {class: 'field__label'}}) }}
+                    <div class="input">
+                        {{ icons.icon('calendar', 24) }}
+                        {{ form_widget(form.spentAt) }}
+                    </div>
+                    {{ ui.field_errors(form.spentAt) }}
+                </div>
+
+                <div class="field{{ form.merchant.vars.valid ? '' : ' is-invalid' }}">
+                    {{ form_label(form.merchant, 'Merchant', {label_attr: {class: 'field__label'}}) }}
+                    <div class="input">
+                        {{ form_widget(form.merchant, {attr: {placeholder: 'e.g. Hotel Vistula Old Town', 'aria-invalid': form.merchant.vars.valid ? 'false' : 'true'}}) }}
+                    </div>
+                    {{ ui.field_errors(form.merchant) }}
+                </div>
+            </div>
+
+            <fieldset class="field{{ form.category.vars.valid ? '' : ' is-invalid' }}">
+                <legend class="field__label">Category</legend>
+                <div class="choice-grid">
+                    {% for child in form.category %}
+                        {% set category = (form.category.vars.choices|filter(choice => choice.value == child.vars.value)|first).data %}
+                        <label class="choice-tile" for="{{ child.vars.id }}">
+                            {{ form_widget(child) }}
+                            {{ icons.icon(category.icon, 24) }}
+                            <span>{{ category.label }}</span>
+                        </label>
+                    {% endfor %}
+                </div>
+                {{ ui.field_errors(form.category) }}
+            </fieldset>
+
+            <div class="actions">
+                <button type="submit" class="button button--primary">{{ button_label }}</button>
+                <a class="link" href="{{ path('app_expense_index') }}">Cancel</a>
+            </div>
+        </div>
+    </div>
+
+{{ form_end(form) }}

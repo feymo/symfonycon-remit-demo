@@ -1,0 +1,62 @@
+{% extends 'base.html.twig' %}
+{% import '_partials/_ui.html.twig' as ui %}
+{% import '_partials/_icons.html.twig' as icons %}
+
+{#
+    Expense detail.
+    Variables: expense (Expense)
+    A draft also gets “Submit for reimbursement” (POST app_expense_submit).
+#}
+
+{% block title %}{{ expense.merchant }}{% endblock %}
+
+{% block breadcrumb %}
+    {{ ui.breadcrumb([
+        {label: 'Expenses', url: path('app_expense_index')},
+        {label: expense.spentAt|date('F Y'), url: path('app_expense_index', {month: expense.spentAt|date('Y-m')})},
+        {label: expense.merchant},
+    ]) }}
+{% endblock %}
+
+{% block body %}
+<div class="detail">
+    <figure class="receipt-photo">
+        {% if expense.receipt %}
+            <img src="{{ asset('uploads/receipts/' ~ expense.receipt.filename) }}" width="1200" height="1600"
+                 alt="Receipt from {{ expense.merchant }}">
+        {% else %}
+            <figcaption class="receipt-photo__missing">{{ icons.icon('receipt', 48) }}<span>No receipt attached</span></figcaption>
+        {% endif %}
+    </figure>
+
+    <section class="detail__body">
+        <div class="detail__heading">
+            <h1>{{ expense.merchant }}</h1>
+            <p class="detail__amount amount">{{ ui.money(expense.amount) }}</p>
+        </div>
+
+        <dl class="card facts">
+            <div><dt>Date</dt><dd>{{ expense.spentAt|date('M j, Y') }}</dd></div>
+            <div><dt>Category</dt><dd>{{ ui.category_tile(expense.category, 'small') }}<span>{{ expense.category.label }}</span></dd></div>
+            <div><dt>Status</dt><dd>{{ ui.status_badge(expense.status) }}</dd></div>
+            <div><dt>Receipt</dt><dd>{{ expense.receipt ? '1 photo attached' : 'Missing' }}</dd></div>
+        </dl>
+
+        <div class="actions">
+            <a class="button button--primary" href="{{ path('app_expense_edit', {id: expense.id}) }}">
+                {{ icons.icon('pencil', 25, 2.5) }}<span>Edit expense</span>
+            </a>
+            {# Draft → Submitted: a plain POST form. #}
+            {% if expense.canBeSubmitted %}
+                <form method="post" action="{{ path('app_expense_submit', {id: expense.id}) }}" class="actions__form">
+                    <input type="hidden" name="_token" value="{{ csrf_token('submit-expense-' ~ expense.id) }}">
+                    <button type="submit" class="button button--secondary">
+                        {{ icons.icon('send', 25, 2.5) }}<span>Submit for reimbursement</span>
+                    </button>
+                </form>
+            {% endif %}
+            <a class="link" href="{{ path('app_expense_index', {month: expense.spentAt|date('Y-m')}) }}">Back to {{ expense.spentAt|date('F') }}</a>
+        </div>
+    </section>
+</div>
+{% endblock %}
