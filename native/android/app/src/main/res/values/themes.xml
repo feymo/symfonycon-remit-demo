@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Light only, like the web app (projector-friendly). -->
+    <style name="Theme.Remit" parent="Theme.Material3.Light.NoActionBar">
+        <item name="colorPrimary">@color/remit_accent</item>
+        <item name="colorOnPrimary">@color/remit_card</item>
+        <item name="colorSurface">@color/remit_card</item>
+        <item name="colorOnSurface">@color/remit_ink</item>
+        <item name="android:colorBackground">@color/remit_background</item>
+        <item name="android:windowLightStatusBar">true</item>
+    </style>
+</resources>

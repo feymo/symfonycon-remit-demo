@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Same tokens as assets/styles/app.css -->
+    <color name="remit_accent">#1D4ED8</color>
+    <color name="remit_ink">#111418</color>
+    <color name="remit_background">#F2F2EE</color>
+    <color name="remit_card">#FFFFFF</color>
+</resources>

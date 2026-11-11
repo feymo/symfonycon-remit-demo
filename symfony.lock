@@ -283,6 +283,18 @@
             "templates/base.html.twig"
         ]
     },
+    "symfony/ux-native": {
+        "version": "3.7",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "main",
+            "version": "3.7",
+            "ref": "42cfa3334a3b5718e164f9961229a193b71ebed8"
+        },
+        "files": [
+            "config/routes/ux_native.yaml"
+        ]
+    },
     "symfony/ux-turbo": {
         "version": "3.7",
         "recipe": {

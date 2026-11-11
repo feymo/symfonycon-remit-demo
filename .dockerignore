@@ -10,3 +10,4 @@ public/uploads/
 assets/vendor/
 compose*.yaml
 Makefile
+native/

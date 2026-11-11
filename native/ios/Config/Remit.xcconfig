@@ -1,0 +1,9 @@
+// Remit — build settings shared by Debug and Release.
+// Machine-specific values (Mac name, Apple team) go in Local.xcconfig, written by generate.sh.
+
+REMIT_BUNDLE_ID = com.bludevon.remit
+REMIT_TEAM_ID =
+// The real iPhone reaches the Mac by its Bonjour name; the Simulator always uses localhost.
+REMIT_SERVER_HOST = localhost
+
+#include? "Local.xcconfig"

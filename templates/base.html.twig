@@ -1,10 +1,11 @@
 {#
-    One layout for every page.
+    One layout for both surfaces.
 #}
 <!DOCTYPE html>
 <html lang="en">
     <head>
         <meta charset="UTF-8">
+        {# No viewport-fit=cover: in the app it lets the page slide under the native title bar. #}
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#ffffff">
         <title>{% block title %}Expenses{% endblock %} · Remit</title>

@@ -6,7 +6,7 @@
 #   Without Docker:             ./setup.sh        — needs PHP 8.4 (intl, pdo_sqlite) and Composer on the Mac
 #
 # What it does:
-#   1. builds a Symfony 8 "webapp" skeleton in a temp folder (+ Twig Intl, fixtures),
+#   1. builds a Symfony 8 "webapp" skeleton in a temp folder (+ UX Native, Twig Intl, fixtures),
 #      then copies it here WITHOUT touching the files already in this folder;
 #   2. SQLite database in var/data.db — everything runs locally, no DB server;
 #   3. downloads IBM Plex Sans into assets/fonts/ (so the stage never needs the venue Wi-Fi);
@@ -41,14 +41,14 @@ else
         # Our own compose.yaml / Dockerfile run the app: no Docker files from the recipes (Postgres, Mailpit…)
         composer config --json extra.symfony.docker false
         composer require webapp --no-interaction
-        composer require twig/intl-extra --no-interaction
+        composer require symfony/ux-native twig/intl-extra --no-interaction
         composer require --dev doctrine/doctrine-fixtures-bundle --no-interaction
     )
 
     step "Merging the skeleton into this folder (existing files are kept)"
     SKEL="$TMP_DIR/app"
     # Ours win over the recipes' examples: base.html.twig, app.css, AppFixtures, native configuration.
-    rm -rf "$SKEL/src/DataFixtures" "$SKEL/var" "$SKEL"/compose*.yaml "$SKEL"/docker-compose*.yml
+    rm -rf "$SKEL/src/DataFixtures" "$SKEL/src/Native" "$SKEL/var" "$SKEL"/compose*.yaml "$SKEL"/docker-compose*.yml
     [ -e vendor ] || mv "$SKEL/vendor" "$APP_DIR/vendor"
     (cd "$SKEL" && find . \( -type f -o -type l \) -print) | while IFS= read -r file; do
         if [ ! -e "$APP_DIR/$file" ] && [ ! -L "$APP_DIR/$file" ]; then
@@ -102,6 +102,7 @@ else
       symfony serve --allow-all-ip
 
   Then open http://127.0.0.1:8000 — the app opens on November 2026.
+  Native shells: point Hotwire Native to http://<your Mac's IP>:8000/expenses
 
 TXT
 fi
