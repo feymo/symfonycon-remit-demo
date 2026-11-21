@@ -165,6 +165,16 @@ button, input, select { font: inherit; color: inherit; }
 
 :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 
+/*
+ * Native controls: the element stays in the HTML for the browser.
+ * Once the app says it handles the component, the native one replaces it.
+ */
+[data-bridge-components~="button"] [data-controller~="bridge--button"],
+[data-bridge-components~="menu"] [data-controller~="bridge--menu"],
+[data-bridge-components~="form"] [data-bridge--form-target~="submit"] {
+    display: none !important;
+}
+
 /* ---------------------------------------------------------------- chrome (web only) */
 
 .navbar {
@@ -284,6 +294,9 @@ button, input, select { font: inherit; color: inherit; }
     gap: 16px;
 }
 
+/* In the app the H1 is gone and the stepper became a native menu: drop the empty row. */
+.is-native .section-head:not(:has(h1)) { display: none; }
+
 .section-head h1, .page-title { font-size: var(--fs-h1); letter-spacing: -0.02em; }
 
 .card {
@@ -331,6 +344,11 @@ button, input, select { font: inherit; color: inherit; }
 
 .actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 20px; }
 .actions__form { display: contents; }
+
+/* In the app “Edit” moved to the title bar: Submit is the only button left, full width. */
+@media (max-width: 640px) {
+    .is-native .actions__form .button { width: 100%; min-height: 50px; font-size: 16px; }
+}
 
 /* ---------------------------------------------------------------- total card */
 

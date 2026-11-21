@@ -9,7 +9,7 @@
 
 {% set invalid_fields = form.children|filter(child => not child.vars.valid)|length %}
 
-{{ form_start(form, {attr: {class: 'expense-form', novalidate: 'novalidate'}}) }}
+{{ form_start(form, {attr: {class: 'expense-form', novalidate: 'novalidate', 'data-controller': 'bridge--form'}}) }}
 
     {% if form.vars.submitted and invalid_fields > 0 %}
         <div class="alert" role="alert">
@@ -84,7 +84,8 @@
             </fieldset>
 
             <div class="actions">
-                <button type="submit" class="button button--primary">{{ button_label }}</button>
+                {# Web: button. App: “Save” in the title bar, wired by bridge--form (this button is hidden). #}
+                <button type="submit" class="button button--primary" data-bridge--form-target="submit" data-bridge-title="Save">{{ button_label }}</button>
                 {% if not ux_is_native() %}
                     <a class="link" href="{{ path('app_expense_index') }}">Cancel</a>
                 {% endif %}

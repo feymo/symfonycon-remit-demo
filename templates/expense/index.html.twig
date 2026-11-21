@@ -38,8 +38,12 @@
                 </ul>
             {% endif %}
 
+            {# Web: a button in the card. App: the native title-bar “+” (this element is hidden). #}
             <a class="button button--primary button--block"
-               href="{{ path('app_expense_new') }}">
+               href="{{ path('app_expense_new') }}"
+               data-controller="bridge--button"
+               data-bridge-title="New expense"
+               data-bridge-ios-image="plus">
                 {{ icons.icon('plus', 26, 2.5) }}<span>New expense</span>
             </a>
         </section>
@@ -51,15 +55,18 @@
                 <h1>{{ month|date('F Y') }}</h1>
             {% endif %}
 
-            <nav class="stepper" aria-label="Month">
+            {# Web: prev / next buttons. App: a native menu in the title bar (this element is hidden). #}
+            <nav class="stepper" aria-label="Month" data-controller="bridge--menu" data-bridge-title="Month">
                 {% if previous_month %}
                     <a class="stepper__button" href="{{ path('app_expense_index', {month: previous_month|date('Y-m')}) }}"
-                       aria-label="Previous month">{{ icons.icon('left', 26, 2.5) }}</a>
+                       aria-label="Previous month" data-bridge--menu-target="item" data-bridge-title="{{ previous_month|date('F Y') }}">{{ icons.icon('left', 26, 2.5) }}</a>
                 {% endif %}
                 {% if next_month %}
                     <a class="stepper__button" href="{{ path('app_expense_index', {month: next_month|date('Y-m')}) }}"
-                       aria-label="Next month">{{ icons.icon('right', 26, 2.5) }}</a>
+                       aria-label="Next month" data-bridge--menu-target="item" data-bridge-title="{{ next_month|date('F Y') }}">{{ icons.icon('right', 26, 2.5) }}</a>
                 {% endif %}
+                <a class="visually-hidden" href="{{ path('app_category_recap', {month: month|date('Y-m')}) }}" data-bridge--menu-target="item" data-bridge-title="By category…">By category</a>
+                <a class="visually-hidden" href="{{ path('app_archive_index') }}" data-bridge--menu-target="item" data-bridge-title="Archives…">Archives</a>
             </nav>
         </div>
 

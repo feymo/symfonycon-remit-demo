@@ -10,6 +10,14 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
             .server(Server.pathConfigurationURL),
         ])
 
+        // The native halves of the bridge--* Stimulus controllers.
+        Hotwire.registerBridgeComponents([
+            ButtonComponent.self,
+            MenuComponent.self,
+            FormComponent.self,
+            HapticComponent.self,
+        ])
+
         Hotwire.config.applicationUserAgentPrefix = "Remit;"
         Hotwire.config.showDoneButtonOnModals = true
         Hotwire.config.backButtonDisplayMode = .minimal

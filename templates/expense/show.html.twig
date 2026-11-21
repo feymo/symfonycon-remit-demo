@@ -46,10 +46,12 @@
         </dl>
 
         <div class="actions">
-            <a class="button button--primary" href="{{ path('app_expense_edit', {id: expense.id}) }}">
+            {# Web: button. App: “Edit” in the title bar. #}
+            <a class="button button--primary" href="{{ path('app_expense_edit', {id: expense.id}) }}"
+               data-controller="bridge--button" data-bridge-title="Edit">
                 {{ icons.icon('pencil', 25, 2.5) }}<span>Edit expense</span>
             </a>
-            {# Draft → Submitted: a plain POST form. #}
+            {# Draft → Submitted: a plain form, no bridge. The success flash buzzes the phone (bridge--haptic). #}
             {% if expense.canBeSubmitted %}
                 <form method="post" action="{{ path('app_expense_submit', {id: expense.id}) }}" class="actions__form">
                     <input type="hidden" name="_token" value="{{ csrf_token('submit-expense-' ~ expense.id) }}">

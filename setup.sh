@@ -75,6 +75,9 @@ for weight in 400 500 600; do
     done
 done
 
+step "JavaScript packages (stored in assets/vendor, nothing loaded from a CDN on stage)"
+php bin/console importmap:require @hotwired/hotwire-native-bridge --no-interaction
+
 step "Database"
 # SQLite: nothing to create — var/data.db appears on the first connection.
 # (DBAL 4 has no CREATE DATABASE for SQLite: doctrine:database:create always fails on it.)
