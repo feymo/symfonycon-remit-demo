@@ -26,10 +26,11 @@
                     No expenses yet
                 {%- else -%}
                     {{ expenses|length }} expense{{ expenses|length > 1 ? 's' }}
+                    {%- if ux_is_native() and counts.draft > 0 %} · {{ counts.draft }} draft{{ counts.draft > 1 ? 's' }}{% endif %}
                 {%- endif -%}
             </p>
 
-            {% if expenses is not empty %}
+            {% if expenses is not empty and not ux_is_native() %}
                 <ul class="total-card__breakdown">
                     {% for status in ['draft', 'submitted', 'reimbursed'] %}
                         <li>{{ ui.status_badge(status) }}<span class="amount">{{ counts[status] }}</span></li>
@@ -46,7 +47,9 @@
 
     <section class="layout__main" aria-label="Expenses">
         <div class="section-head">
-            <h1>{{ month|date('F Y') }}</h1>
+            {% if not ux_is_native() %}
+                <h1>{{ month|date('F Y') }}</h1>
+            {% endif %}
 
             <nav class="stepper" aria-label="Month">
                 {% if previous_month %}

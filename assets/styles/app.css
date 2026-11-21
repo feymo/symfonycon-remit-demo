@@ -265,6 +265,8 @@ button, input, select { font: inherit; color: inherit; }
     padding: 28px var(--gutter) 40px;
 }
 
+.is-native .page { padding-top: 14px; gap: 12px; }
+
 .layout {
     display: grid;
     grid-template-columns: 340px minmax(0, 1fr);

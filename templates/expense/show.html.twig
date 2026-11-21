@@ -3,7 +3,8 @@
 {% import '_partials/_icons.html.twig' as icons %}
 
 {#
-    Expense detail.
+    Expense detail. The ux_is_native() demo screen:
+    web keeps navbar, breadcrumb, <h1> and footer; the app drops them and shows the receipt first.
     Variables: expense (Expense)
     A draft also gets “Submit for reimbursement” (POST app_expense_submit).
 #}
@@ -31,7 +32,9 @@
 
     <section class="detail__body">
         <div class="detail__heading">
-            <h1>{{ expense.merchant }}</h1>
+            {% if not ux_is_native() %}
+                <h1>{{ expense.merchant }}</h1>
+            {% endif %}
             <p class="detail__amount amount">{{ ui.money(expense.amount) }}</p>
         </div>
 
@@ -55,7 +58,9 @@
                     </button>
                 </form>
             {% endif %}
-            <a class="link" href="{{ path('app_expense_index', {month: expense.spentAt|date('Y-m')}) }}">Back to {{ expense.spentAt|date('F') }}</a>
+            {% if not ux_is_native() %}
+                <a class="link" href="{{ path('app_expense_index', {month: expense.spentAt|date('Y-m')}) }}">Back to {{ expense.spentAt|date('F') }}</a>
+            {% endif %}
         </div>
     </section>
 </div>

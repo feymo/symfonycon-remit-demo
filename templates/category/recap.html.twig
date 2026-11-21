@@ -21,14 +21,22 @@
             {% set total_label = ui.money(total) %}
             <p class="total-card__amount amount{{ total_label|length > 8 ? ' total-card__amount--long' }}">{{ total_label }}</p>
             <p class="total-card__sub">
-                {{ expense_count }} expenses in {{ rows|length }} categories
+                {%- if ux_is_native() -%}
+                    {{ month|date('F Y') }} · {{ rows|length }} categories
+                {%- else -%}
+                    {{ expense_count }} expenses in {{ rows|length }} categories
+                {%- endif -%}
             </p>
-            <a class="button button--secondary button--block" href="{{ path('app_expense_index', {month: month|date('Y-m')}) }}">See all expenses</a>
+            {% if not ux_is_native() %}
+                <a class="button button--secondary button--block" href="{{ path('app_expense_index', {month: month|date('Y-m')}) }}">See all expenses</a>
+            {% endif %}
         </section>
     </aside>
 
     <section class="layout__main" aria-label="Categories">
-        <div class="section-head"><h1>{{ month|date('F Y') }}, by category</h1></div>
+        {% if not ux_is_native() %}
+            <div class="section-head"><h1>{{ month|date('F Y') }}, by category</h1></div>
+        {% endif %}
 
         <div class="card list">
             {% for row in rows %}

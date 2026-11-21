@@ -1,24 +1,32 @@
 {#
     One layout for both surfaces.
+
+    ux_is_native() only removes what the native shell already provides:
+      - the navbar, the breadcrumb and the footer (below),
+      - the page <h1> (each page wraps it; the title bar shows <title> instead).
 #}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="{{ ux_is_native() ? 'is-native' : 'is-web' }}">
     <head>
         <meta charset="UTF-8">
         {# No viewport-fit=cover: in the app it lets the page slide under the native title bar. #}
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#ffffff">
-        <title>{% block title %}Expenses{% endblock %} · Remit</title>
+        <title>{% block title %}Expenses{% endblock %}{% if not ux_is_native() %} · Remit{% endif %}</title>
         {% block stylesheets %}{% endblock %}
         {% block javascripts %}
             {% block importmap %}{{ importmap('app') }}{% endblock %}
         {% endblock %}
     </head>
     <body>
-        {{ include('_partials/_navbar.html.twig') }}
+        {% if not ux_is_native() %}
+            {{ include('_partials/_navbar.html.twig') }}
+        {% endif %}
 
         <main class="page">
-            {% block breadcrumb %}{% endblock %}
+            {% if not ux_is_native() %}
+                {% block breadcrumb %}{% endblock %}
+            {% endif %}
 
             {% for message in app.flashes('success') %}
                 <p class="flash" role="status">{{ message }}</p>
@@ -27,6 +35,8 @@
             {% block body %}{% endblock %}
         </main>
 
-        {{ include('_partials/_footer.html.twig') }}
+        {% if not ux_is_native() %}
+            {{ include('_partials/_footer.html.twig') }}
+        {% endif %}
     </body>
 </html>

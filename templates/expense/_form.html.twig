@@ -27,7 +27,7 @@
                 <img class="photo-drop__preview" alt="" hidden data-receipt-preview-target="image">
                 <span class="photo-drop__icon">{{ icons.icon('camera', 52) }}</span>
                 <span class="photo-drop__title">Take a photo of the receipt</span>
-                <span class="photo-drop__hint">Opens the camera — or pick a file</span>
+                <span class="photo-drop__hint">{{ ux_is_native() ? 'Opens the camera' : 'Opens the camera — or pick a file' }}</span>
                 {{ form_widget(form.receipt, {attr: {
                     class: 'visually-hidden',
                     accept: 'image/*',
@@ -85,7 +85,9 @@
 
             <div class="actions">
                 <button type="submit" class="button button--primary">{{ button_label }}</button>
-                <a class="link" href="{{ path('app_expense_index') }}">Cancel</a>
+                {% if not ux_is_native() %}
+                    <a class="link" href="{{ path('app_expense_index') }}">Cancel</a>
+                {% endif %}
             </div>
         </div>
     </div>

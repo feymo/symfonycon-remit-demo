@@ -10,6 +10,8 @@
 {% endblock %}
 
 {% block body %}
-    <h1 class="page-title">New expense</h1>
+    {% if not ux_is_native() %}
+        <h1 class="page-title">New expense</h1>
+    {% endif %}
     {{ include('expense/_form.html.twig', {button_label: 'Save expense'}) }}
 {% endblock %}
